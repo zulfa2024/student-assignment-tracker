@@ -1,12 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Assignment from "@/app/models/Assignment";
 import { connectDB } from "@/app/lib/mongodb";
 
 // GET one assignment
-export async function GET(req, context) {
-  const params = await context.params; // ⭐ FIX
+export async function GET(
+  req: NextRequest,
+  context: { params: { id: string } },
+) {
+  const { id } = context.params;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -15,7 +18,7 @@ export async function GET(req, context) {
 
   await connectDB();
 
-  const assignment = await Assignment.findById(params.id);
+  const assignment = await Assignment.findById(id);
   if (!assignment) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
@@ -24,8 +27,11 @@ export async function GET(req, context) {
 }
 
 // UPDATE assignment
-export async function PUT(req, context) {
-  const params = await context.params; // ⭐ FIX
+export async function PUT(
+  req: NextRequest,
+  context: { params: { id: string } },
+) {
+  const { id } = context.params;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -36,7 +42,7 @@ export async function PUT(req, context) {
 
   const body = await req.json();
 
-  const updated = await Assignment.findByIdAndUpdate(params.id, body, {
+  const updated = await Assignment.findByIdAndUpdate(id, body, {
     returnDocument: "after",
   });
 
@@ -48,8 +54,11 @@ export async function PUT(req, context) {
 }
 
 // DELETE assignment
-export async function DELETE(req, context) {
-  const params = await context.params; // ⭐ FIX
+export async function DELETE(
+  req: NextRequest,
+  context: { params: { id: string } },
+) {
+  const { id } = context.params;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -58,7 +67,7 @@ export async function DELETE(req, context) {
 
   await connectDB();
 
-  const deleted = await Assignment.findByIdAndDelete(params.id);
+  const deleted = await Assignment.findByIdAndDelete(id);
 
   if (!deleted) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
