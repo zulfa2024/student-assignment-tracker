@@ -3,13 +3,27 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+// ✅ Define the Assignment type
+type AssignmentType = {
+  _id: string;
+  title: string;
+  description: string;
+  status: string;
+  dueDate: string;
+  createdAt: string;
+};
+
 export default function AssignmentList() {
-  const [assignments, setAssignments] = useState([]);
+  // ✅ Tell React what type the array contains
+  const [assignments, setAssignments] = useState<AssignmentType[]>([]);
 
   useEffect(() => {
     fetch("/api/assignments")
       .then((res) => res.json())
-      .then((data) => setAssignments(data));
+      .then((data) => {
+        // Your API returns { assignments: [...] }
+        setAssignments(data.assignments || []);
+      });
   }, []);
 
   return (
@@ -18,7 +32,7 @@ export default function AssignmentList() {
         <p className="text-gray-500">No assignments yet.</p>
       )}
 
-      {assignments.map((a) => (
+      {assignments.map((a: AssignmentType) => (
         <Link
           key={a._id}
           href={`/assignments/${a._id}`}
