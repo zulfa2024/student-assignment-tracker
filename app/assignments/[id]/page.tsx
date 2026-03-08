@@ -2,6 +2,7 @@ import { connectDB } from "@/app/lib/mongodb";
 import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
 import DeleteButton from "@/app/components/DeleteButton";
+import { notFound } from "next/navigation";
 
 export default async function AssignmentDetailPage({
   params,
@@ -15,12 +16,7 @@ export default async function AssignmentDetailPage({
   const assignment = await Assignment.findById(id).lean();
 
   if (!assignment) {
-    return (
-      <div style={{ padding: "2rem", textAlign: "center" }}>
-        <h2>Assignment not found</h2>
-        <Link href="/assignments/list/">Go back</Link>
-      </div>
-    );
+    notFound(); // <-- safe 404
   }
 
   const data = JSON.parse(JSON.stringify(assignment));
@@ -28,15 +24,12 @@ export default async function AssignmentDetailPage({
   return (
     <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
       <h1>{data.title}</h1>
-
       <p>
         <strong>Description:</strong> {data.description}
       </p>
-
       <p>
         <strong>Status:</strong> {data.status}
       </p>
-
       <p>
         <strong>Due Date:</strong> {new Date(data.dueDate).toLocaleDateString()}
       </p>

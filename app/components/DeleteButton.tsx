@@ -1,41 +1,34 @@
-"use client";
-
 import { useRouter } from "next/navigation";
 
 export default function DeleteButton({ id }: { id: string }) {
   const router = useRouter();
 
-  async function handleDelete() {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this assignment?",
-    );
-    if (!confirmed) return;
-
+  const handleDelete = async () => {
     const res = await fetch(`/api/assignments/${id}`, {
       method: "DELETE",
     });
 
     if (res.ok) {
-      router.replace("/assignments/list/"); // ✅ FIXED
-      router.refresh();
+      router.push("/assignments/list/"); // redirect after delete
     } else {
-      alert("Failed to delete assignment.");
+      alert("Failed to delete");
     }
-  }
+  };
 
   return (
     <button
       onClick={handleDelete}
       style={{
+        display: "inline-block",
+        marginTop: "1rem",
         padding: "0.5rem 1rem",
         background: "#dc2626",
         color: "white",
         borderRadius: "6px",
         border: "none",
-        cursor: "pointer",
       }}
     >
-      Delete
+      Delete Assignment
     </button>
   );
 }
