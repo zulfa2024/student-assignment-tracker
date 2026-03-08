@@ -40,6 +40,7 @@ export default async function AssignmentDetailPage({
         <strong>Due Date:</strong> {new Date(data.dueDate).toLocaleDateString()}
       </p>
 
+      {/* Edit Button */}
       <Link
         href={`/assignments/${data._id}/edit`}
         style={{
@@ -50,9 +51,48 @@ export default async function AssignmentDetailPage({
           color: "white",
           borderRadius: "6px",
           textDecoration: "none",
+          marginRight: "10px",
         }}
       >
         Edit Assignment
+      </Link>
+
+      {/* Delete Button */}
+      <form
+        action={`/api/assignments/${data._id}`}
+        method="POST"
+        style={{ display: "inline" }}
+      >
+        <button
+          formAction={`/api/assignments/${data._id}`}
+          formMethod="DELETE"
+          style={{
+            padding: "0.5rem 1rem",
+            background: "#dc2626",
+            color: "white",
+            borderRadius: "6px",
+            border: "none",
+            cursor: "pointer",
+            marginRight: "10px",
+          }}
+        >
+          Delete
+        </button>
+      </form>
+
+      {/* Go Back Button */}
+      <Link
+        href="/assignments"
+        style={{
+          display: "inline-block",
+          padding: "0.5rem 1rem",
+          background: "#6b7280",
+          color: "white",
+          borderRadius: "6px",
+          textDecoration: "none",
+        }}
+      >
+        Go Back
       </Link>
     </div>
   );
