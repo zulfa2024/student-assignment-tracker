@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
-// ✅ 1. Define the Assignment type
+// ✅ Assignment type
 type AssignmentType = {
   _id: string;
   title: string;
@@ -16,17 +16,16 @@ type AssignmentType = {
 };
 
 export default function AssignmentsPage() {
-  // 2. Hooks
   const { data: session, status } = useSession();
 
-  // ✅ 3. Tell React what type assignments should be
+  // ✅ Typed state
   const [assignments, setAssignments] = useState<AssignmentType[]>([]);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // 4. Load assignments
+  // Load assignments
   useEffect(() => {
     async function loadAssignments() {
       try {
@@ -39,7 +38,7 @@ export default function AssignmentsPage() {
 
         const data = await res.json();
 
-        // ✅ Extract the array correctly
+        // ✅ Extract array correctly
         setAssignments(data.assignments || []);
       } catch (err) {
         setError("Unable to load assignments.");
@@ -51,7 +50,7 @@ export default function AssignmentsPage() {
     loadAssignments();
   }, []);
 
-  // 5. Session gate
+  // Session gate
   if (status === "loading") {
     return <p>Loading...</p>;
   }
@@ -60,7 +59,6 @@ export default function AssignmentsPage() {
     redirect("/login-required");
   }
 
-  // 6. Loading + error UI
   if (loading) {
     return <p style={{ textAlign: "center" }}>Loading...</p>;
   }
@@ -99,16 +97,17 @@ export default function AssignmentsPage() {
     );
   }
 
-  // 7. Filtering logic — now fully typed
+  // ✅ Fully typed filtering logic
   const filteredAssignments = assignments
-    .filter((a) => {
+    .filter((a: AssignmentType) => {
       if (filter === "pending") return a.status === "pending";
       if (filter === "completed") return a.status === "completed";
       return true;
     })
-    .filter((a) => a.title.toLowerCase().includes(search.toLowerCase()));
+    .filter((a: AssignmentType) =>
+      a.title.toLowerCase().includes(search.toLowerCase()),
+    );
 
-  // 8. UI
   return (
     <div
       style={{
@@ -193,7 +192,7 @@ export default function AssignmentsPage() {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        {filteredAssignments.map((a) => (
+        {filteredAssignments.map((a: AssignmentType) => (
           <div
             key={a._id}
             style={{
