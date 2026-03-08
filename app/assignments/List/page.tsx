@@ -5,17 +5,28 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
+// ✅ 1. Define the Assignment type
+type AssignmentType = {
+  _id: string;
+  title: string;
+  description: string;
+  status: string;
+  dueDate: string;
+  createdAt: string;
+};
+
 export default function AssignmentsPage() {
-  // 1️⃣ All hooks must run first
+  // 2. Hooks
   const { data: session, status } = useSession();
 
-  const [assignments, setAssignments] = useState([]);
+  // ✅ 3. Tell React what type assignments should be
+  const [assignments, setAssignments] = useState<AssignmentType[]>([]);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // 2️⃣ useEffect must run BEFORE any conditional return
+  // 4. Load assignments
   useEffect(() => {
     async function loadAssignments() {
       try {
@@ -27,7 +38,9 @@ export default function AssignmentsPage() {
         if (!res.ok) throw new Error("Failed to load assignments");
 
         const data = await res.json();
-        setAssignments(data);
+
+        // ✅ Extract the array correctly
+        setAssignments(data.assignments || []);
       } catch (err) {
         setError("Unable to load assignments.");
       } finally {
@@ -38,7 +51,7 @@ export default function AssignmentsPage() {
     loadAssignments();
   }, []);
 
-  // 3️⃣ Session gate — prevents dashboard flash + fixes hook order
+  // 5. Session gate
   if (status === "loading") {
     return <p>Loading...</p>;
   }
@@ -47,7 +60,7 @@ export default function AssignmentsPage() {
     redirect("/login-required");
   }
 
-  // 4️⃣ Now safe to render loading/error states
+  // 6. Loading + error UI
   if (loading) {
     return <p style={{ textAlign: "center" }}>Loading...</p>;
   }
@@ -86,7 +99,7 @@ export default function AssignmentsPage() {
     );
   }
 
-  // 5️⃣ Filter logic
+  // 7. Filtering logic — now fully typed
   const filteredAssignments = assignments
     .filter((a) => {
       if (filter === "pending") return a.status === "pending";
@@ -95,7 +108,7 @@ export default function AssignmentsPage() {
     })
     .filter((a) => a.title.toLowerCase().includes(search.toLowerCase()));
 
-  // 6️⃣ Final UI
+  // 8. UI
   return (
     <div
       style={{
