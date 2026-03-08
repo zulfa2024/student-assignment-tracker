@@ -16,7 +16,7 @@ export default function DeleteButton({ id }: { id: string }) {
     });
 
     if (res.ok) {
-      router.replace("/assignments/");
+      router.replace("/assignments/list/"); // ✅ FIXED
       router.refresh();
     } else {
       alert("Failed to delete assignment.");

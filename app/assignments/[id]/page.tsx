@@ -18,7 +18,7 @@ export default async function AssignmentDetailPage({
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
         <h2>Assignment not found</h2>
-        <Link href="/assignments/">Go back</Link>
+        <Link href="/assignments/list/">Go back</Link>
       </div>
     );
   }
@@ -58,12 +58,12 @@ export default async function AssignmentDetailPage({
         Edit Assignment
       </Link>
 
-      {/* Delete Button (client-side, no blank page) */}
+      {/* Delete Button */}
       <DeleteButton id={data._id} />
 
-      {/* Go Back Button (fixed) */}
+      {/* Go Back Button */}
       <Link
-        href="/assignments/"
+        href="/assignments/list/"
         style={{
           display: "inline-block",
           padding: "0.5rem 1rem",
