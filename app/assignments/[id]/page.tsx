@@ -1,6 +1,7 @@
 import { connectDB } from "@/app/lib/mongodb";
 import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
+import DeleteButton from "@/app/components/DeleteButton";
 
 export default async function AssignmentDetailPage({
   params,
@@ -17,7 +18,7 @@ export default async function AssignmentDetailPage({
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
         <h2>Assignment not found</h2>
-        <Link href="/assignments">Go back</Link>
+        <Link href="/assignments/">Go back</Link>
       </div>
     );
   }
@@ -57,32 +58,12 @@ export default async function AssignmentDetailPage({
         Edit Assignment
       </Link>
 
-      {/* Delete Button */}
-      <form
-        action={`/api/assignments/${data._id}`}
-        method="POST"
-        style={{ display: "inline" }}
-      >
-        <button
-          formAction={`/api/assignments/${data._id}`}
-          formMethod="DELETE"
-          style={{
-            padding: "0.5rem 1rem",
-            background: "#dc2626",
-            color: "white",
-            borderRadius: "6px",
-            border: "none",
-            cursor: "pointer",
-            marginRight: "10px",
-          }}
-        >
-          Delete
-        </button>
-      </form>
+      {/* Delete Button (client-side, no blank page) */}
+      <DeleteButton id={data._id} />
 
-      {/* Go Back Button */}
+      {/* Go Back Button (fixed) */}
       <Link
-        href="/assignments"
+        href="/assignments/"
         style={{
           display: "inline-block",
           padding: "0.5rem 1rem",
@@ -90,6 +71,7 @@ export default async function AssignmentDetailPage({
           color: "white",
           borderRadius: "6px",
           textDecoration: "none",
+          marginLeft: "10px",
         }}
       >
         Go Back
