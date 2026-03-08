@@ -3,8 +3,12 @@ import { connectDB } from "@/app/lib/mongodb";
 import Assignment from "@/app/models/Assignment";
 import EditForm from "./EditForm";
 
-export default async function EditAssignmentPage({ params }) {
-  const { id } = await params;
+export default async function EditAssignmentPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = params;
 
   await connectDB();
 
