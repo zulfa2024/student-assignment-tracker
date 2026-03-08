@@ -22,11 +22,10 @@ export default function DeleteButton({ id }: { id: string }) {
         return;
       }
 
-      // Redirect back to list page
+      // ⭐ Redirect IMMEDIATELY after delete
       router.push("/assignments/list/");
       router.refresh();
     } catch (error) {
-      console.error("Delete error:", error);
       alert("Something went wrong.");
     }
   }

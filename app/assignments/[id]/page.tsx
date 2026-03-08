@@ -7,16 +7,22 @@ import { notFound } from "next/navigation";
 export default async function AssignmentDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = await params;
+  const { id } = params;
 
   await connectDB();
 
   const assignment = await Assignment.findById(id).lean();
 
+  // ⭐ SAFE 404 — prevents server crash after delete
   if (!assignment) {
-    notFound(); // <-- safe 404
+    return (
+      <div style={{ padding: "2rem", textAlign: "center" }}>
+        <h2>Assignment not found</h2>
+        <Link href="/assignments/list/">Go back</Link>
+      </div>
+    );
   }
 
   const data = JSON.parse(JSON.stringify(assignment));
@@ -24,12 +30,15 @@ export default async function AssignmentDetailPage({
   return (
     <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
       <h1>{data.title}</h1>
+
       <p>
         <strong>Description:</strong> {data.description}
       </p>
+
       <p>
         <strong>Status:</strong> {data.status}
       </p>
+
       <p>
         <strong>Due Date:</strong> {new Date(data.dueDate).toLocaleDateString()}
       </p>
