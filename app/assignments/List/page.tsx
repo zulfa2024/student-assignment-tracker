@@ -218,7 +218,7 @@ export default function AssignmentsPage() {
             </p>
 
             <Link
-              href={`/assignments/${a._id}`}
+              href={`/assignments/${a._id.toString()}`}
               style={{
                 padding: "0.5rem 1rem",
                 background: "#2563eb",

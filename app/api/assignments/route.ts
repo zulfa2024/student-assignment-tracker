@@ -14,10 +14,8 @@ export async function GET(req: NextRequest) {
 
   const skip = (page - 1) * limit;
 
-  // Build query
   const query: any = {};
 
-  // Search filter
   if (search) {
     query.$or = [
       { title: { $regex: search, $options: "i" } },
@@ -25,16 +23,21 @@ export async function GET(req: NextRequest) {
     ];
   }
 
-  // Status filter
   if (status !== "all") {
     query.status = status;
   }
 
-  const assignments = await Assignment.find(query)
+  let assignments = await Assignment.find(query)
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
     .lean();
+
+  // ⭐ FIX: Convert _id to string
+  assignments = assignments.map((a) => ({
+    ...a,
+    _id: a._id.toString(),
+  }));
 
   const total = await Assignment.countDocuments(query);
 
