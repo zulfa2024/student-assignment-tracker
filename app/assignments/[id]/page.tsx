@@ -2,7 +2,6 @@ import { connectDB } from "@/app/lib/mongodb";
 import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
 import DeleteButton from "@/app/components/DeleteButton";
-import { notFound } from "next/navigation";
 
 export default async function AssignmentDetailPage({
   params,
@@ -15,7 +14,7 @@ export default async function AssignmentDetailPage({
 
   const assignment = await Assignment.findById(id).lean();
 
-  // ⭐ SAFE 404 — prevents server crash after delete
+  // SAFE fallback — prevents crash after delete
   if (!assignment) {
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
