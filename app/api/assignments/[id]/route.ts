@@ -7,11 +7,11 @@ import { connectDB } from "@/app/lib/mongodb";
 // GET one assignment
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = context.params;
-  const session = await getServerSession(authOptions);
+  const { id } = await params;
 
+  const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -19,6 +19,7 @@ export async function GET(
   await connectDB();
 
   const assignment = await Assignment.findById(id);
+
   if (!assignment) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
@@ -29,11 +30,11 @@ export async function GET(
 // UPDATE assignment
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = context.params;
-  const session = await getServerSession(authOptions);
+  const { id } = await params;
 
+  const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -42,34 +43,34 @@ export async function PUT(
 
   const body = await req.json();
 
-  const updated = await Assignment.findByIdAndUpdate(id, body, {
-    returnDocument: "after",
+  const updatedAssignment = await Assignment.findByIdAndUpdate(id, body, {
+    new: true,
   });
 
-  if (!updated) {
+  if (!updatedAssignment) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  return NextResponse.json(updated);
+  return NextResponse.json(updatedAssignment);
 }
 
 // DELETE assignment
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = context.params;
-  const session = await getServerSession(authOptions);
+  const { id } = await params;
 
+  const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   await connectDB();
 
-  const deleted = await Assignment.findByIdAndDelete(id);
+  const deletedAssignment = await Assignment.findByIdAndDelete(id);
 
-  if (!deleted) {
+  if (!deletedAssignment) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
