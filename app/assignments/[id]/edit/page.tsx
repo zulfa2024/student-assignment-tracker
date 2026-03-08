@@ -6,15 +6,17 @@ import EditForm from "./EditForm";
 export default async function EditAssignmentPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = await params;
+  const { id } = params;
 
   await connectDB();
 
   const assignment = await Assignment.findById(id).lean();
 
-  if (!assignment) return notFound();
+  if (!assignment) {
+    return notFound();
+  }
 
   const data = JSON.parse(JSON.stringify(assignment));
 

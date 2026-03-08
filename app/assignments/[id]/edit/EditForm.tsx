@@ -3,7 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function EditForm({ assignment }: { assignment: any }) {
+type AssignmentType = {
+  _id: string;
+  title: string;
+  description: string;
+  dueDate: string;
+  status: string;
+};
+
+export default function EditForm({
+  assignment,
+}: {
+  assignment: AssignmentType;
+}) {
   const router = useRouter();
 
   const [title, setTitle] = useState(assignment.title);
@@ -16,7 +28,7 @@ export default function EditForm({ assignment }: { assignment: any }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const id = assignment._id.toString();
+    const id = assignment._id; // already a string
 
     const res = await fetch(`/api/assignments/${id}`, {
       method: "PUT",
@@ -30,8 +42,11 @@ export default function EditForm({ assignment }: { assignment: any }) {
     });
 
     if (res.ok) {
+      // ⭐ replace() prevents going back to stale edit page
       router.replace(`/assignments/${id}`);
       router.refresh();
+    } else {
+      alert("Failed to update assignment.");
     }
   }
 
