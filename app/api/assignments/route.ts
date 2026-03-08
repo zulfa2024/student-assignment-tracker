@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Assignment from "@/app/models/Assignment";
 import { connectDB } from "@/app/lib/mongodb";
 
-export async function GET(req) {
+export async function GET(req: NextRequest) {
   await connectDB();
 
   const { searchParams } = new URL(req.url);
@@ -15,7 +15,7 @@ export async function GET(req) {
   const skip = (page - 1) * limit;
 
   // Build query
-  const query = {};
+  const query: any = {};
 
   // Search filter
   if (search) {
@@ -46,7 +46,7 @@ export async function GET(req) {
   });
 }
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
   await connectDB();
   const body = await req.json();
   const created = await Assignment.create(body);
