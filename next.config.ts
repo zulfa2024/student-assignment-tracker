@@ -1,3 +1,4 @@
+// @ts-nocheck
 // disable typed routes
 import type { NextConfig } from "next";
 
