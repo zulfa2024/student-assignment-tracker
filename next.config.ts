@@ -1,3 +1,4 @@
+// disable typed routes
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
