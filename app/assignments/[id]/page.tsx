@@ -6,9 +6,9 @@ import DeleteButton from "@/app/components/DeleteButton";
 export default async function AssignmentDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
 
   await connectDB();
 
@@ -41,6 +41,7 @@ export default async function AssignmentDetailPage({
         <strong>Due Date:</strong> {new Date(data.dueDate).toLocaleDateString()}
       </p>
 
+      {/* Edit Button */}
       <Link
         href={`/assignments/${data._id}/edit`}
         style={{
@@ -57,8 +58,10 @@ export default async function AssignmentDetailPage({
         Edit Assignment
       </Link>
 
+      {/* Delete Button */}
       <DeleteButton id={data._id} />
 
+      {/* Go Back Button */}
       <Link
         href="/assignments/list/"
         style={{
