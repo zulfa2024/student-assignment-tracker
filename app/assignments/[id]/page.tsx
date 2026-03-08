@@ -41,7 +41,6 @@ export default async function AssignmentDetailPage({
         <strong>Due Date:</strong> {new Date(data.dueDate).toLocaleDateString()}
       </p>
 
-      {/* Edit Button */}
       <Link
         href={`/assignments/${data._id}/edit`}
         style={{
@@ -58,10 +57,8 @@ export default async function AssignmentDetailPage({
         Edit Assignment
       </Link>
 
-      {/* Delete Button */}
       <DeleteButton id={data._id} />
 
-      {/* Go Back Button */}
       <Link
         href="/assignments/list/"
         style={{
