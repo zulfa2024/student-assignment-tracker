@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
-// ✅ Assignment type
+// Assignment type
 type AssignmentType = {
   _id: string;
   title: string;
@@ -18,7 +18,6 @@ type AssignmentType = {
 export default function AssignmentsPage() {
   const { data: session, status } = useSession();
 
-  // ✅ Typed state
   const [assignments, setAssignments] = useState<AssignmentType[]>([]);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -38,7 +37,6 @@ export default function AssignmentsPage() {
 
         const data = await res.json();
 
-        // ✅ Extract array correctly
         setAssignments(data.assignments || []);
       } catch (err) {
         setError("Unable to load assignments.");
@@ -97,7 +95,7 @@ export default function AssignmentsPage() {
     );
   }
 
-  // ✅ Fully typed filtering logic
+  // Filtering logic
   const filteredAssignments = assignments
     .filter((a: AssignmentType) => {
       if (filter === "pending") return a.status === "pending";
