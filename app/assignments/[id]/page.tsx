@@ -6,9 +6,9 @@ import DeleteButton from "@/app/components/DeleteButton";
 export default async function AssignmentDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
 
   await connectDB();
 
