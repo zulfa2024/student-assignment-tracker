@@ -16,7 +16,7 @@ export default function EditForm({ assignment }: { assignment: any }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const id = assignment._id.toString(); // ensure string
+    const id = assignment._id.toString();
 
     const res = await fetch(`/api/assignments/${id}`, {
       method: "PUT",
@@ -29,7 +29,6 @@ export default function EditForm({ assignment }: { assignment: any }) {
       }),
     });
 
-    // Only redirect if update succeeded
     if (res.ok) {
       router.replace(`/assignments/${id}`);
       router.refresh();

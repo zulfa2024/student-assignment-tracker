@@ -5,15 +5,13 @@ import Link from "next/link";
 export default async function AssignmentDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
 
   await connectDB();
 
-  const assignment = JSON.parse(
-    JSON.stringify(await Assignment.findById(id).lean()),
-  );
+  const assignment = await Assignment.findById(id).lean();
 
   if (!assignment) {
     return (
@@ -24,22 +22,26 @@ export default async function AssignmentDetailPage({
     );
   }
 
+  const data = JSON.parse(JSON.stringify(assignment));
+
   return (
     <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
-      <h1>{assignment.title}</h1>
+      <h1>{data.title}</h1>
+
       <p>
-        <strong>Description:</strong> {assignment.description}
+        <strong>Description:</strong> {data.description}
       </p>
+
       <p>
-        <strong>Status:</strong> {assignment.status}
+        <strong>Status:</strong> {data.status}
       </p>
+
       <p>
-        <strong>Due Date:</strong>{" "}
-        {new Date(assignment.dueDate).toLocaleDateString()}
+        <strong>Due Date:</strong> {new Date(data.dueDate).toLocaleDateString()}
       </p>
 
       <Link
-        href={`/assignments/${assignment._id}/edit`}
+        href={`/assignments/${data._id}/edit`}
         style={{
           display: "inline-block",
           marginTop: "1rem",
