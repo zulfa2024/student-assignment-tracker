@@ -5,14 +5,19 @@ import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export default async function AssignmentDetailPage({
-  params,
-}: {
-  params: { id: string };
+export default async function AssignmentDetailPage(props: {
+  params: Promise<{ id: string }>;
 }) {
+  const params = await props.params;
+
+  console.log("🔥 DETAIL PAGE PARAMS:", params);
+
   const { id } = params;
 
+  console.log("🔥 PARAM ID:", id);
+
   const session = await getServerSession(authOptions);
+
   if (!session) {
     redirect("/login-required");
   }
