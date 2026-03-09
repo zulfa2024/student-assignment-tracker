@@ -262,7 +262,7 @@ export default function AssignmentsPage() {
                   cursor: "pointer",
                 }}
               >
-                Delete
+                Delete 
               </button>
             </div>
           </div>
