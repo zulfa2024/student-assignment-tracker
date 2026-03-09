@@ -7,9 +7,9 @@ import { connectDB } from "@/app/lib/mongodb";
 // GET one assignment
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: { id: string } },
 ) {
-  const { id } = await params;
+  const { id } = params;
 
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -30,9 +30,9 @@ export async function GET(
 // UPDATE assignment
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: { id: string } },
 ) {
-  const { id } = await params;
+  const { id } = params;
 
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -57,9 +57,9 @@ export async function PUT(
 // DELETE assignment
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: { id: string } },
 ) {
-  const { id } = await params;
+  const { id } = params;
 
   const session = await getServerSession(authOptions);
   if (!session) {
