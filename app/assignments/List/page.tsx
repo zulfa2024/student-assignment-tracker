@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
-// Assignment type
 type AssignmentType = {
   _id: string;
   title: string;
@@ -24,8 +23,10 @@ export default function AssignmentsPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Load assignments
+  // Load assignments ONLY after session is ready
   useEffect(() => {
+    if (status !== "authenticated") return;
+
     async function loadAssignments() {
       try {
         setError("");
@@ -36,7 +37,6 @@ export default function AssignmentsPage() {
         if (!res.ok) throw new Error("Failed to load assignments");
 
         const data = await res.json();
-
         setAssignments(data.assignments || []);
       } catch (err) {
         setError("Unable to load assignments.");
@@ -46,7 +46,7 @@ export default function AssignmentsPage() {
     }
 
     loadAssignments();
-  }, []);
+  }, [status]);
 
   // Session gate
   if (status === "loading") {
@@ -95,16 +95,13 @@ export default function AssignmentsPage() {
     );
   }
 
-  // Filtering logic
   const filteredAssignments = assignments
-    .filter((a: AssignmentType) => {
+    .filter((a) => {
       if (filter === "pending") return a.status === "pending";
       if (filter === "completed") return a.status === "completed";
       return true;
     })
-    .filter((a: AssignmentType) =>
-      a.title.toLowerCase().includes(search.toLowerCase()),
-    );
+    .filter((a) => a.title.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div
@@ -190,7 +187,7 @@ export default function AssignmentsPage() {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        {filteredAssignments.map((a: AssignmentType) => (
+        {filteredAssignments.map((a) => (
           <div
             key={a._id}
             style={{
@@ -218,7 +215,7 @@ export default function AssignmentsPage() {
             </p>
 
             <Link
-              href={`/assignments/${a._id.toString()}`}
+              href={`/assignments/${a._id}`}
               style={{
                 padding: "0.5rem 1rem",
                 background: "#2563eb",
