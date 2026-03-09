@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Assignment from "@/app/models/Assignment";
 import { connectDB } from "@/app/lib/mongodb";
 
 export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   await connectDB();
 
   const { searchParams } = new URL(req.url);
@@ -33,7 +41,6 @@ export async function GET(req: NextRequest) {
     .limit(limit)
     .lean();
 
-  // ⭐ FIX: Convert _id to string
   assignments = assignments.map((a) => ({
     ...a,
     _id: a._id.toString(),
@@ -50,6 +57,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   await connectDB();
   const body = await req.json();
   const created = await Assignment.create(body);
