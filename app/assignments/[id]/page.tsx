@@ -10,6 +10,9 @@ export default async function AssignmentDetailPage({
 }: {
   params: { id: string };
 }) {
+  // 🔥 DEBUG: See what Next.js is actually passing
+  console.log("🔥 DETAIL PAGE PARAMS:", params);
+
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -18,11 +21,11 @@ export default async function AssignmentDetailPage({
 
   const { id } = params;
 
-  console.log("PARAM ID:", id);
+  console.log("🔥 PARAM ID:", id);
 
   await connectDB();
 
-  // ⭐ FIX: Use findById(id) directly — your IDs are strings, not ObjectIds
+  // IDs in your DB are strings, so no ObjectId conversion
   const assignment = await Assignment.findById(id);
 
   if (!assignment) {
