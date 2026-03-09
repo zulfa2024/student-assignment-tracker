@@ -7,9 +7,9 @@ import { connectDB } from "@/app/lib/mongodb";
 // GET one assignment
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = params;
+  const { id } = await params;
 
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -18,7 +18,7 @@ export async function GET(
 
   await connectDB();
 
-  const assignment = await Assignment.findById(id).lean();
+  const assignment = await Assignment.findById(id);
 
   if (!assignment) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -30,9 +30,9 @@ export async function GET(
 // UPDATE assignment
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = params;
+  const { id } = await params;
 
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -43,23 +43,23 @@ export async function PUT(
 
   const body = await req.json();
 
-  const updatedAssignment = await Assignment.findByIdAndUpdate(id, body, {
+  const updated = await Assignment.findByIdAndUpdate(id, body, {
     new: true,
-  }).lean();
+  });
 
-  if (!updatedAssignment) {
+  if (!updated) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  return NextResponse.json(updatedAssignment);
+  return NextResponse.json(updated);
 }
 
 // DELETE assignment
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = params;
+  const { id } = await params;
 
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -68,9 +68,9 @@ export async function DELETE(
 
   await connectDB();
 
-  const deletedAssignment = await Assignment.findByIdAndDelete(id).lean();
+  const deleted = await Assignment.findByIdAndDelete(id);
 
-  if (!deletedAssignment) {
+  if (!deleted) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
