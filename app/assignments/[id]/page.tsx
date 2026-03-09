@@ -4,17 +4,14 @@ import { connectDB } from "@/app/lib/mongodb";
 import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import mongoose from "mongoose";
 
-export default async function AssignmentDetailPage(props: {
-  params: Promise<{ id: string }>;
+export default async function AssignmentDetailPage({
+  params,
+}: {
+  params: { id: string };
 }) {
-  const params = await props.params;
-
-  console.log("🔥 DETAIL PAGE PARAMS:", params);
-
   const { id } = params;
-
-  console.log("🔥 PARAM ID:", id);
 
   const session = await getServerSession(authOptions);
 
@@ -24,19 +21,29 @@ export default async function AssignmentDetailPage(props: {
 
   await connectDB();
 
-  const assignment = await Assignment.findById(id);
-
-  if (!assignment) {
+  // ✅ Prevent MongoDB CastError
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
-        <h2>Assignment not found</h2>
+        <h2>Invalid Assignment ID</h2>
         <p>ID: {id}</p>
         <Link href="/assignments/list">Go back</Link>
       </div>
     );
   }
 
-  const data = JSON.parse(JSON.stringify(assignment));
+  const assignment = await Assignment.findById(id);
+
+  if (!assignment) {
+    return (
+      <div style={{ padding: "2rem", textAlign: "center" }}>
+        <h2>Assignment not found</h2>
+        <Link href="/assignments/list">Go back</Link>
+      </div>
+    );
+  }
+
+  const data = assignment.toObject();
 
   return (
     <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
