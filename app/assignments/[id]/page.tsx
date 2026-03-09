@@ -1,20 +1,29 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/app/lib/mongodb";
 import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
 import DeleteButton from "@/app/components/DeleteButton";
+import { redirect } from "next/navigation";
 
 export default async function AssignmentDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
+  const session = await getServerSession(authOptions);
+
+  // Protect the page
+  if (!session) {
+    redirect("/login-required");
+  }
+
   const { id } = params;
 
   await connectDB();
 
   const assignment = await Assignment.findById(id).lean();
 
-  // SAFE fallback — prevents crash after delete
   if (!assignment) {
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
