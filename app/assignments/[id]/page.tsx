@@ -4,7 +4,6 @@ import { connectDB } from "@/app/lib/mongodb";
 import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import mongoose from "mongoose";
 
 export default async function AssignmentDetailPage({
   params,
@@ -14,23 +13,11 @@ export default async function AssignmentDetailPage({
   const { id } = params;
 
   const session = await getServerSession(authOptions);
-
   if (!session) {
     redirect("/login-required");
   }
 
   await connectDB();
-
-  // ✅ Prevent MongoDB CastError
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return (
-      <div style={{ padding: "2rem", textAlign: "center" }}>
-        <h2>Invalid Assignment ID</h2>
-        <p>ID: {id}</p>
-        <Link href="/assignments/list">Go back</Link>
-      </div>
-    );
-  }
 
   const assignment = await Assignment.findById(id);
 
@@ -38,12 +25,13 @@ export default async function AssignmentDetailPage({
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
         <h2>Assignment not found</h2>
+        <p>ID: {id}</p>
         <Link href="/assignments/list">Go back</Link>
       </div>
     );
   }
 
-  const data = assignment.toObject();
+  const data = JSON.parse(JSON.stringify(assignment));
 
   return (
     <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
