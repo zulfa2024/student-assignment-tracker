@@ -103,6 +103,27 @@ export default function AssignmentsPage() {
     })
     .filter((a) => a.title.toLowerCase().includes(search.toLowerCase()));
 
+  // ⭐ DELETE HANDLER
+  async function handleDelete(id: string) {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this assignment?",
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`/api/assignments/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("Failed to delete");
+
+      // Remove from UI instantly
+      setAssignments((prev) => prev.filter((a) => a._id !== id));
+    } catch (err) {
+      alert("Error deleting assignment.");
+    }
+  }
+
   return (
     <div
       style={{
@@ -214,19 +235,36 @@ export default function AssignmentsPage() {
               Status: {a.status}
             </p>
 
-            <Link
-              href={`/assignments/${a._id}`}
-              style={{
-                padding: "0.5rem 1rem",
-                background: "#2563eb",
-                color: "white",
-                borderRadius: "6px",
-                textDecoration: "none",
-                fontSize: "0.9rem",
-              }}
-            >
-              View / Edit
-            </Link>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <Link
+                href={`/assignments/${a._id}`}
+                style={{
+                  padding: "0.5rem 1rem",
+                  background: "#2563eb",
+                  color: "white",
+                  borderRadius: "6px",
+                  textDecoration: "none",
+                  fontSize: "0.9rem",
+                }}
+              >
+                View / Edit
+              </Link>
+
+              <button
+                onClick={() => handleDelete(a._id)}
+                style={{
+                  padding: "0.5rem 1rem",
+                  background: "#dc2626",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>

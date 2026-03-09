@@ -5,13 +5,16 @@ import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export default async function AssignmentDetailPage({
-  params,
-}: {
-  params: { id: string };
+export default async function AssignmentDetailPage(props: {
+  params: Promise<{ id: string }>;
 }) {
-  // 🔥 DEBUG: See what Next.js is actually passing
+  const params = await props.params;
+
   console.log("🔥 DETAIL PAGE PARAMS:", params);
+
+  const { id } = params;
+
+  console.log("🔥 PARAM ID:", id);
 
   const session = await getServerSession(authOptions);
 
@@ -19,13 +22,8 @@ export default async function AssignmentDetailPage({
     redirect("/login-required");
   }
 
-  const { id } = params;
-
-  console.log("🔥 PARAM ID:", id);
-
   await connectDB();
 
-  // IDs in your DB are strings, so no ObjectId conversion
   const assignment = await Assignment.findById(id);
 
   if (!assignment) {
