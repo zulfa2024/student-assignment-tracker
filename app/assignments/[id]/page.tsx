@@ -7,42 +7,39 @@ import DeleteButton from "@/app/components/DeleteButton";
 import { redirect } from "next/navigation";
 import mongoose from "mongoose";
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
-export default async function AssignmentDetailPage({ params }: Props) {
+export default async function AssignmentDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const session = await getServerSession(authOptions);
 
-  // Protect page
   if (!session) {
     redirect("/login-required");
   }
 
   const { id } = params;
 
-  console.log("Assignment page requested ID:", id);
-
-  // Validate Mongo ID
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return (
-      <div style={{ padding: "2rem", textAlign: "center" }}>
-        <h2>Invalid assignment ID</h2>
-        <Link href="/assignments/list">Go back</Link>
-      </div>
-    );
-  }
+  console.log("PARAM ID:", id);
 
   await connectDB();
 
-  const assignment = await Assignment.findById(id).lean();
+  // DEBUG: show all assignments in server logs
+  const allAssignments = await Assignment.find();
+  console.log("ALL ASSIGNMENTS:", allAssignments);
+
+  // safer query
+  const assignment = await Assignment.findOne({
+    _id: new mongoose.Types.ObjectId(id),
+  });
+
+  console.log("FOUND ASSIGNMENT:", assignment);
 
   if (!assignment) {
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
         <h2>Assignment not found</h2>
+        <p>ID: {id}</p>
         <Link href="/assignments/list">Go back</Link>
       </div>
     );
@@ -66,7 +63,7 @@ export default async function AssignmentDetailPage({ params }: Props) {
         <strong>Due Date:</strong> {new Date(data.dueDate).toLocaleDateString()}
       </p>
 
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "1rem" }}>
         <Link
           href={`/assignments/${data._id}/edit`}
           style={{
