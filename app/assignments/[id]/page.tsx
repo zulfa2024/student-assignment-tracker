@@ -5,20 +5,35 @@ import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
 import DeleteButton from "@/app/components/DeleteButton";
 import { redirect } from "next/navigation";
+import mongoose from "mongoose";
 
-export default async function AssignmentDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+type Props = {
+  params: {
+    id: string;
+  };
+};
+
+export default async function AssignmentDetailPage({ params }: Props) {
   const session = await getServerSession(authOptions);
 
-  // Protect the page
+  // Protect page
   if (!session) {
     redirect("/login-required");
   }
 
   const { id } = params;
+
+  console.log("Assignment page requested ID:", id);
+
+  // Validate Mongo ID
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return (
+      <div style={{ padding: "2rem", textAlign: "center" }}>
+        <h2>Invalid assignment ID</h2>
+        <Link href="/assignments/list">Go back</Link>
+      </div>
+    );
+  }
 
   await connectDB();
 
@@ -28,7 +43,7 @@ export default async function AssignmentDetailPage({
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
         <h2>Assignment not found</h2>
-        <Link href="/assignments/list/">Go back</Link>
+        <Link href="/assignments/list">Go back</Link>
       </div>
     );
   }
@@ -51,38 +66,37 @@ export default async function AssignmentDetailPage({
         <strong>Due Date:</strong> {new Date(data.dueDate).toLocaleDateString()}
       </p>
 
-      <Link
-        href={`/assignments/${data._id}/edit`}
-        style={{
-          display: "inline-block",
-          marginTop: "1rem",
-          padding: "0.5rem 1rem",
-          background: "#2563eb",
-          color: "white",
-          borderRadius: "6px",
-          textDecoration: "none",
-          marginRight: "10px",
-        }}
-      >
-        Edit Assignment
-      </Link>
+      <div style={{ marginTop: "20px" }}>
+        <Link
+          href={`/assignments/${data._id}/edit`}
+          style={{
+            padding: "8px 14px",
+            background: "#2563eb",
+            color: "white",
+            borderRadius: "6px",
+            textDecoration: "none",
+            marginRight: "10px",
+          }}
+        >
+          Edit Assignment
+        </Link>
 
-      <DeleteButton id={data._id} />
+        <DeleteButton id={data._id} />
 
-      <Link
-        href="/assignments/list/"
-        style={{
-          display: "inline-block",
-          padding: "0.5rem 1rem",
-          background: "#6b7280",
-          color: "white",
-          borderRadius: "6px",
-          textDecoration: "none",
-          marginLeft: "10px",
-        }}
-      >
-        Go Back
-      </Link>
+        <Link
+          href="/assignments/list"
+          style={{
+            padding: "8px 14px",
+            background: "#6b7280",
+            color: "white",
+            borderRadius: "6px",
+            textDecoration: "none",
+            marginLeft: "10px",
+          }}
+        >
+          Go Back
+        </Link>
+      </div>
     </div>
   );
 }
