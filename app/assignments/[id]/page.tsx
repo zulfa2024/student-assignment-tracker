@@ -3,9 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "@/app/lib/mongodb";
 import Assignment from "@/app/models/Assignment";
 import Link from "next/link";
-import DeleteButton from "@/app/components/DeleteButton";
 import { redirect } from "next/navigation";
-import mongoose from "mongoose";
 
 export default async function AssignmentDetailPage({
   params,
@@ -24,16 +22,8 @@ export default async function AssignmentDetailPage({
 
   await connectDB();
 
-  // DEBUG: show all assignments in server logs
-  const allAssignments = await Assignment.find();
-  console.log("ALL ASSIGNMENTS:", allAssignments);
-
-  // safer query
-  const assignment = await Assignment.findOne({
-    _id: new mongoose.Types.ObjectId(id),
-  });
-
-  console.log("FOUND ASSIGNMENT:", assignment);
+  // ⭐ FIX: Use findById(id) directly — your IDs are strings, not ObjectIds
+  const assignment = await Assignment.findById(id);
 
   if (!assignment) {
     return (
@@ -77,8 +67,6 @@ export default async function AssignmentDetailPage({
         >
           Edit Assignment
         </Link>
-
-        <DeleteButton id={data._id} />
 
         <Link
           href="/assignments/list"
