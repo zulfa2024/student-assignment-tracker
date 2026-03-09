@@ -1,6 +1,19 @@
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import type { Session } from "next-auth";
+import type { JWT } from "next-auth/jwt";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+}
 
 export const authOptions = {
   providers: [
@@ -17,14 +30,14 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-    async session({ session, token }) {
-      if (token?.sub) {
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (token?.sub && session.user) {
         session.user.id = token.sub;
       }
       return session;
     },
 
-    async jwt({ token }) {
+    async jwt({ token }: { token: JWT }) {
       return token;
     },
   },
