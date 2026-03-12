@@ -38,6 +38,7 @@ export default function AssignmentsPage() {
 
         const data = await res.json();
         setAssignments(data.assignments || []);
+        
       } catch (err) {
         setError("Unable to load assignments.");
       } finally {
@@ -99,6 +100,7 @@ export default function AssignmentsPage() {
     .filter((a) => {
       if (filter === "pending") return a.status === "pending";
       if (filter === "completed") return a.status === "completed";
+      if (filter === "in-progress") return a.status === "in-progress";
       return true;
     })
     .filter((a) => a.title.toLowerCase().includes(search.toLowerCase()));
@@ -190,6 +192,7 @@ export default function AssignmentsPage() {
         >
           <option value="all">All Assignments</option>
           <option value="pending">Pending Only</option>
+          <option value="in-progress">In-Progress</option>
           <option value="completed">Completed Only</option>
         </select>
       </div>
@@ -262,7 +265,7 @@ export default function AssignmentsPage() {
                   cursor: "pointer",
                 }}
               >
-                Delete 
+                Delete
               </button>
             </div>
           </div>
