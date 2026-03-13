@@ -5,11 +5,13 @@ interface GlobalErrorProps {
   reset: () => void;
 }
 
-export default function Error({ error, reset }: GlobalErrorProps) {
+export default function GlobalError({ error, reset }: GlobalErrorProps) {
   return (
     <div className="p-10 text-center">
       <h1 className="text-3xl font-bold mb-4">Something Went Wrong</h1>
-      <p className="text-gray-600 mb-6">{error?.message}</p>
+      <p className="text-gray-600 mb-6">
+        {error?.message || "An unexpected error occurred."}
+      </p>
 
       <button
         onClick={() => reset()}
