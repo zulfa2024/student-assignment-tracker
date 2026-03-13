@@ -1,6 +1,11 @@
 "use client";
 
-export default function AssignmentError({ error, reset }) {
+interface ErrorProps {
+  error: Error;
+  reset: () => void;
+}
+
+export default function AssignmentError({ error, reset }: ErrorProps) {
   return (
     <div className="p-10 text-center">
       <h1 className="text-3xl font-bold mb-4">Assignment Error</h1>
