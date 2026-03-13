@@ -1,16 +1,20 @@
 "use client";
 
-interface GlobalErrorProps {
+interface AssignmentErrorProps {
   error: Error;
   reset: () => void;
 }
 
-export default function GlobalError({ error, reset }: GlobalErrorProps) {
+export default function AssignmentError({
+  error,
+  reset,
+}: AssignmentErrorProps) {
   return (
     <div className="p-10 text-center">
-      <h1 className="text-3xl font-bold mb-4">Something Went Wrong</h1>
+      <h1 className="text-3xl font-bold mb-4">Assignment Error</h1>
+
       <p className="text-gray-600 mb-6">
-        {error?.message || "An unexpected error occurred."}
+        {error?.message || "Unable to load this assignment."}
       </p>
 
       <button
