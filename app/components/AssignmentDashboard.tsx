@@ -29,7 +29,7 @@ export default function AssignmentDashboard() {
     try {
       setLoading(true);
       setError(null);
-
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       const params = new URLSearchParams({
         page: String(page),
         limit: String(limit),
