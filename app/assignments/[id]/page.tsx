@@ -31,7 +31,7 @@ export default async function AssignmentDetailPage(props: {
       <div style={{ padding: "2rem", textAlign: "center" }}>
         <h2>Assignment not found</h2>
         <p>ID: {id}</p>
-        <Link href="/assignments/list">Go back</Link>
+        <Link href="/">Go back</Link>
       </div>
     );
   }
@@ -70,7 +70,7 @@ export default async function AssignmentDetailPage(props: {
         </Link>
 
         <Link
-          href="/assignments/list"
+          href="/"
           style={{
             padding: "8px 14px",
             background: "#6b7280",

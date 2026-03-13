@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import DeleteButton from "@/app/components/DeleteButton";
 
 type Assignment = {
   _id: string;
@@ -134,12 +135,24 @@ export default function AssignmentDashboard() {
               </p>
             </div>
 
-            <Link
-              href={`/assignments/${assignment._id}`}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              View
-            </Link>
+            <div className="flex gap-2">
+              <Link
+                href={`/assignments/${assignment._id}`}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                View
+              </Link>
+
+              {/* ⭐ DELETE BUTTON ADDED HERE */}
+              <DeleteButton
+                id={assignment._id}
+                onDelete={() => {
+                  setAssignments((prev) =>
+                    prev.filter((item) => item._id !== assignment._id),
+                  );
+                }}
+              />
+            </div>
           </div>
         ))}
       </div>

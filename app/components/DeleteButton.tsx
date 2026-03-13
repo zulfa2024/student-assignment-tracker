@@ -2,7 +2,13 @@
 
 import { useRouter } from "next/navigation";
 
-export default function DeleteButton({ id }: { id: string }) {
+export default function DeleteButton({
+  id,
+  onDelete,
+}: {
+  id: string;
+  onDelete: () => void;
+}) {
   const router = useRouter();
 
   async function handleDelete() {
@@ -22,8 +28,10 @@ export default function DeleteButton({ id }: { id: string }) {
         return;
       }
 
-      // ⭐ Redirect IMMEDIATELY after delete
-      router.push("/assignments/list/");
+      // ⭐ Instantly update UI
+      onDelete();
+
+      // ⭐ Refresh server data in background
       router.refresh();
     } catch (error) {
       alert("Something went wrong.");
@@ -32,6 +40,7 @@ export default function DeleteButton({ id }: { id: string }) {
 
   return (
     <button
+      type="button"
       onClick={handleDelete}
       style={{
         padding: "0.5rem 1rem",
